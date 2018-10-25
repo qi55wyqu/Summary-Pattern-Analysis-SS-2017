@@ -1,51 +1,51 @@
 % !TeX root = ../main.tex
 
-\subsection*{Multi Dimensional Scaling (MDS)}
+\subsection{Multi Dimensional Scaling (MDS)}
 
-\paragraph{Idea:} Reconstruct a set of points (potentially in a lower dimension) from their differences.\footnote{MDS computes the "best" (in a least square sense) coordinates up to rotation, translation and mirroring (axis reversal).}
+\paragraph{Idea:} Reconstruct a set of points (potentially in a lower dimension) from their differences.\footnote{MDS computes the ``best'' (in a least square sense) coordinates up to rotation, translation and mirroring (axis reversal).}
 
 \begin{itemize}
-    \item  Let \(X\) denote a matrix consisting of all samples, \(X=[\vec{x_1}, \dots, \vec{x_N}] \in \mathbb{R}^{d \times N}\)
-    \item  Let \(D^2 = [d_{ij}^2]_{i, j \in \{1, \dots, N\}}\), where \(d_{ij}^2 = (\vec{x_i} - \vec{x_j})^T (\vec{x_i} - \vec{x_j})\)
-    \item  We assume that \(\vec{x_1}, \dots, \vec{x_N}\) have zero mean i.e. \(\sum_{i=1}^N \vec{x_i} = \vec{0}\)
-    \item  Goal: Given \(D^2\), compute \(X\)
+    \item  Let \(\mat{X}\) denote a matrix consisting of all samples, \(\mat{X}=[\vec{x}_1, \dots, \vec{x}_N] \in \mathbb{R}^{d \times N}\)
+    \item  Let \(\mat{D}^2 = [d_{ij}^2]_{i, j \in \{1, \dots, N\}}\), where \(d_{ij}^2 = (\vec{x}_i - \vec{x}_j)^T (\vec{x}_i - \vec{x}_j)\)
+    \item  We assume that \(\vec{x}_1, \dots, \vec{x}_N\) have zero mean i.e. \(\sum_{i=1}^N \vec{x}_i = \vec{0}\)
+    \item  Goal: Given \(\mat{D}^2\), compute \(\mat{X}\)
 \end{itemize}
 
 Let us consider the distances in terms of \(\vec{x}\)
-\[d_{ij}^2 = (\vec{x_i} - \vec{x_j})^T(\vec{x_i} - \vec{x_j})=\vec{x_i}^T \vec{x_i} - 2 \vec{x_i}^T \vec{x_j} + \vec{x_j}^T \vec{x_j} \]
+\[d_{ij}^2 = (\vec{x}_i - \vec{x}_j)^T(\vec{x}_i - \vec{x}_j)=\vec{x}_i^T \vec{x}_i - 2 \vec{x}_i^T \vec{x}_j + \vec{x}_j^T \vec{x}_j \]
 
-In matrix notation,\footnote{where \(diag(A)\) denotes a vector diagonal entries of \(A\), i.e. \(diag(A) = (a_{11}, a_{22}, \dots, a_{NN})^2\)}
+In matrix notation,\footnote{where \(\diag(\mat{A})\) denotes a vector diagonal entries of \(\mat{A}\), i.e. \(\diag(\mat{A}) = (a_{11}, a_{22}, \dots, a_{NN})^2\)}
 
-\[D^2 = diag(X^T X) \cdot \vec{1}^T - 2X^TX + \vec{1} \cdot diag(X^T X)^T\]
+\[\mat{D}^2 = \diag(\mat{X}^T\mat{X}) \cdot \vec{1}^T - 2\mat{X}^T\mat{X} + \vec{1} \cdot \diag(\mat{X}^T\mat{X})^T\]
 
 
-Multiply \(D^2\) from left and right with a centering matrix \(C = (I - \frac{1}{N} \vec{1} \ \vec{1}^T)\), and weight the result by \(-\frac{1}{2}\)
+Multiply \(\mat{D}^2\) from left and right with a centering matrix \(\mat{C} = \left(I - \frac{1}{N} \vec{1} \ \vec{1}^T\right)\), and weight the result by \(-\frac{1}{2}\)
 
 \begin{align*}
-    -\frac{1}{2} C D^2 C &= -\frac{1}{2} (I- \frac{1}{N} \vec{1} \ \vec{1}^T) (diag(X^T X) \cdot \vec{1}^T - 2X^TX + \vec{1} \cdot diag(X^T X)^T)(I- \frac{1}{N} \vec{1} \ \vec{1}^T)\\
+    -\frac{1}{2}\mat{C}\mat{D}^2\mat{C} &= -\frac{1}{2}\left(I- \frac{1}{N} \vec{1} \ \vec{1}^T\right)\left(\diag\left(\mat{X}^T\mat{X}\right) \cdot \vec{1}^T - 2\mat{X}^T\mat{X} + \vec{1} \cdot\diag\left(\mat{X}^T\mat{X}\right)^T\right)\left(I- \frac{1}{N} \vec{1} \ \vec{1}^T\right)\\
     &= \dots (\text{because of the zero mean assumtion this breaks down to}) \\
-    &= X^T X
+    &=\mat{X}^T\mat{X}
 \end{align*}
 
-Obtaining $X$ is a matrix factorization problem, which we can solve by computing the eigenvector-eigenvalue decomposition\footnote{we can do this because its an square matrix} of \(X^T X\). Therefore MDS breaks down to:
+Obtaining $\mat{X}$ is a matrix factorization problem, which we can solve by computing the eigenvector-eigenvalue decomposition\footnote{we can do this because it's a square matrix} of \(\mat{X}^T\mat{X}\). Therefore MDS breaks down to:
 
-\[ \boxed{SVD(-\frac{1}{2} C D^2 C) = U \Sigma U^T}\]
+\[ \boxed{\mathrm{SVD}\left(-\frac{1}{2}\mat{C}\mat{D}^2\mat{C}\right) = \mat{U}\mat{\Sigma}\mat{U}^T}\]
 
-\[ \Rightarrow X = \Sigma^{\frac{1}{2}} U^T \]
+\[ \Rightarrow \mat{X} = \mat{\Sigma}^{\frac{1}{2}} \mat{U}^T \]
 
 We can reduce the dimensionality of our data by:
 \begin{itemize}
     \item Determining the \(d\) largest eigenvalues and their corresponding eigenvectors
-    \item Dropping the remaining eigenvalue and eigenvectors inside the multiplication
+    \item Dropping the remaining eigenvalues and eigenvectors inside the multiplication
 \end{itemize}
 
 MDS is essentially the same thing as PCA, but it operates on distances.
 
-
-\subsection*{Isometric Feature Mapping (ISOMAP)}
+\newpage
+\subsection{Isometric Feature Mapping (ISOMAP)}
 A non-linearity ``patch'' to MDS
 
-\paragraph{Idea:} Nearby points have their ``usual'' euclidean distance. If a pair of points are not within a local neighborhood, then the distance between these points is a \textbf{graph distance}\footnote{Compute the all pairs shortest path (Dijkstra, A*,  DFS, Floyd–Warshall, ...)}. Then run MDS on the resulting distance Matrix.
+\paragraph{Idea:} Nearby points have their ``usual'' Euclidean distance. If a pair of points is not within a local neighborhood, then the distance between these points is a \textbf{graph distance}\footnote{Compute the all pairs shortest path (Dijkstra, A*,  DFS, Floyd–Warshall, ...)}. Then run MDS on the resulting distance Matrix.
 
 ISOMAP operates on geodesic distances (like a distance on earths surface/distances on the manifold).
 
@@ -53,3 +53,34 @@ ISOMAP operates on geodesic distances (like a distance on earths surface/distanc
 	\item ISOMAP is guaranteed asymptotically to recover the true dimensionality and geometric structure of a strictly larger class of nonlinear manifolds, which intrinsic geometry is that of a convex region of Euclidean space
 	\item ISOMAP is a polynomial time, non-iterative procedure which guarantees global optimality
 \end{itemize}
+
+\begin{algorithm}[H]
+\caption{ISOMAP}
+\begin{algorithmic}
+  \REQUIRE Data matrix $\mat{X}$, number of neighbors $k$, number of dimensions to reduce to $d'$
+  \STATE Initialize: Distance weight matrix $\mat{D}\in\mathbb{R}^{|\mat{X}|\times|\mat{X}|}$
+  \STATE
+  \FOR {all feature vectors}
+    %\STATE Compute (Euclidean) distance to all other points
+    %\STATE Get $k$ nearest neighbours
+    \STATE Assign weight to the $k$ nearest neighbors $\mat{D}_{ij}=\ltwo{\vec{x}_i-\vec{x}_j}$
+    \STATE Assign weight to feature vector itself: $\mat{D}_{ii}=0$
+    \STATE Assign weight to all other feature vectors: $\mat{D}_{ij}=\infty$
+  \ENDFOR
+  \STATE
+  \STATE Compute all-pairs-shortest-paths (geodesic distance) using Floyd-Warshall:
+  \FOR {$k$ from 1 to $|\mat{X}|$}
+    \FOR {$i$ from 1 to $|\mat{X}|$}
+      \FOR {$j$ from 1 to $|\mat{X}|$}
+        \IF {$\mat{D}_{ij}>\mat{D}_{ik}+\mat{D}_{kj}$}
+          \STATE $\mat{D}_{ij}\gets\mat{D}_{ik}+\mat{D}_{kj}$
+        \ENDIF
+      \ENDFOR
+    \ENDFOR
+  \ENDFOR
+  \STATE
+  \STATE $\mat{C}=\mat{I}-\frac1N\vec{1}\,\vec{1}\transp$
+  \STATE Compute $\mat{M}=-\frac12\,\mat{C}\transp\,\mat{D}^2\,\mat{C}$
+  \ENSURE The eigenvectors that belong to the first $d'$ largest eigenvalues of $\mat{M}$ 
+\end{algorithmic}
+\end{algorithm}

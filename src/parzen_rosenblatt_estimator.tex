@@ -1,14 +1,14 @@
 % !TeX root = ../main.tex
 
-\section*{Parzen-Window estimator}
-\paragraph{Idea:} Quantify the number of samples with a appropriate kernel/window function. In other words we interpolate
+\section{Parzen-Window estimator}
+\paragraph{Idea:} Quantify the number of samples with an appropriate kernel/window function. In other words we interpolate
 % \footnote{General remark: We obtain a continuous pdf, i.e.\ desity estimation converts a list of measurments to a statistical model}
 the pdf from the observations in the neighborhood of a position $\vec{x}$.
 
-\paragraph{Derivation:} We can express $p_R$, the probability that $\vec{x}$ lies within a region $R$, in terms of the volume $V_R$ of this region\footnote{$\int_R \,d\vec{x}$ is just the volume of $R$, we also write $V_R$ for the volume}, when $p(\vec{x})$ is approximately constant in $R$.
+\paragraph{Derivation:} We can express $p_R$, the probability that $\vec{x}$ lies within a region $R$, in terms of the volume $V_R$ of this region\footnote{$\int_R\dif\vec{x}$ is just the volume of $R$, we also write $V_R$ for the volume}, when $p(\vec{x})$ is approximately constant in $R$.
 
 \begin{equation*}
-  p_R = \int_R p(\vec{x}) \,d\vec{x} \ \approx \ p(\vec{x}) \int_R \,d\vec{x} = p(\vec{x}) V_R
+  p_R = \int_R p(\vec{x})\dif\vec{x} \ \approx \ p(\vec{x}) \int_R\dif\vec{x} = p(\vec{x}) V_R
 \end{equation*}
 
 We determine $p_R = \dfrac{k_R}{N}$ the probability of making observations in region $R$ (also ``relative frequency'')  by counting the samples in $R$ ($=k_R$) and dividing by the total number of samples.
@@ -17,40 +17,53 @@ We determine $p_R = \dfrac{k_R}{N}$ the probability of making observations in re
   p(\vec{x}) = \dfrac{p_R}{V_R} = \dfrac{k_R}{V_R N}
 \end{equation*}
 
-Let's write the parzen window estimator as a function of a kernel $k(\vec{x}; \vec{x_i})$. If $R$ is a d-dimensional hypercube with side length $h$, then its volume is $h^d$.
+Let's write the Parzen window estimator as a function of a kernel $k(\vec{x}; \vec{x}_i)$. If $R$ is a $d$-dimensional hypercube with side length $h$, then its volume is $h^d$.
 
 \begin{equation*}
-  \boxed{p(\vec{x}) = \dfrac{1}{h^d N} \sum_{i=1}^N k(\vec{x}; \vec{x_i})}
+  \boxed{p(\vec{x}) = \dfrac{1}{h^d N} \sum_{i=1}^N k(\vec{x}; \vec{x}_i)}
 \end{equation*}
 
-where we can choose a suitable kernel function $k(\vec{x}; \vec{x_i})$. E.g. binary decision\footnote{$\vec{x_i}$ and $\vec{x}$ are not father apart then $0.5 h$ in any dimension $k$} or a (multivariate) Gaussian kernel\footnote{Omit $h^d$ if the kernel is gaussian}:
+where we can choose a suitable kernel function $k(\vec{x}; \vec{x_i})$, \eg binary decision\footnote{$\vec{x}_i$ and $\vec{x}$ are not farther apart than $0.5 h$ in any dimension $k$} or a (multivariate) Gaussian kernel\footnote{Omit $h^d$ if the kernel is Gaussian}:
 
 \begin{equation*}
-  k(\vec{x}; \vec{x_i}) = \begin{cases}
-    1 &\text{when } \dfrac{|x_{i,k} - x_k|}{h} \le \dfrac{1}{2}\\
+  k(\vec{x}; \vec{x}_i) = \begin{cases}
+    1 &\text{if } \dfrac{|x_{i,k} - x_k|}{h} \le \dfrac{1}{2}\\
     0 &\text{otherwise}
   \end{cases}
   \qquad \qquad
-  k(\vec{x}; \vec{x_i}) = \dfrac{1}{{(2\pi)}^d |\Sigma|} e^{-{(\vec{x} - \vec{x_i})}^T \Sigma^{-1}(\vec{x}-\vec{x_i})}
+  k(\vec{x}; \vec{x}_i)=\frac{1}{\sqrt{\det(2\pi\covar)}}\cdot\exp\left(-\frac12(\vec{x}-\vec{x}_i)^T\inv{\covar}(\vec{x}-\vec{x}_i)\right)
 \end{equation*}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{03-window-size}
-  \caption{Effects of the window / kernel size: too small, too wide, just right}
+  \begin{subfigure}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth, trim=0 0 560 0, clip]{03-window-size}
+    \caption{too small}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth, trim=280 0 280 0, clip]{03-window-size}
+    \caption{too wide}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth, trim=560 0 0 0, clip]{03-window-size}
+    \caption{just right}
+  \end{subfigure}
+  \caption{Effects of the window / kernel size}
 \end{figure}
 
 \paragraph{How can we determine a good window / kernel size} $\hat{h}$?
 
-Let's do ML est.\ with a cross-validation (cv) e.g.\ leave-one-sample-out cv. Estimate the pdf from all samples except $\vec{x_j}$, which will be used to evaluate the quality of the pdf using window size $h$.
+Let's do ML est.\ with a cross-validation (cv) \eg leave-one-sample-out cv. Estimate the pdf from all samples except $\vec{x}_j$, which will be used to evaluate the quality of the pdf using window size $h$.
 
 \begin{equation*}
-  p_{h,N-1}^j(\vec{x}) = \dfrac{1}{h^d N} \sum_{i=1 (i \neq j)}^N k(\vec{x}; \vec{x_i})
+  p_{h,N-1}^j(\vec{x}) = \dfrac{1}{h^d N} \sum_{\substack{i=1\\i \neq j}}^N k(\vec{x}; \vec{x}_i)
 \end{equation*}
 
 \begin{equation*}
-  \hat{h} = \argmax_h L(h) = \argmax_h \prod_{j=1}^N p_{h,N-1}^j(\vec{x_j}) = \argmax_h \sum_{j=1}^N \log p_{h,N-1}^j(\vec{x_j})
+  \hat{h} = \argmax_h L(h) = \argmax_h \prod_{j=1}^N p_{h,N-1}^j(\vec{x}_j) = \argmax_h \sum_{j=1}^N \log p_{h,N-1}^j(\vec{x}_j)
 \end{equation*}
 
 \paragraph{Remark:}
-When the data is scaled differently, then we would like the window size to be adaptive. One solution is to use the k-NN combined with the Parzen window estimator. This means we force the number of neighbors inside a window to equal a fixed k.
+When the data is scaled differently, then we would like the window size to be adaptive. One solution is to use the $k$-NN combined with the Parzen window estimator. This means we force the number of neighbors inside a window to equal a fixed $k$.

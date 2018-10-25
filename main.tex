@@ -1,26 +1,21 @@
-\documentclass[12p]{article}
-\usepackage[top=3cm, bottom=3cm, left=2cm,right=2cm]{geometry}
+\documentclass[a4paper]{article}
 
-\usepackage[utf8]{inputenc}
+\input{preamble}
+\input{commands}
 
-\usepackage{import}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{bm}
-\usepackage{tikz}
-\usepackage{graphicx}
 \graphicspath{ {images/} }
-\usepackage{float}
-\usepackage{multirow}
-\usepackage{hyperref}
 
 \title{Summary Pattern Analysis\\ SS 2017}
 \author{Nils Häusler, Moritz Grand}
 \date{\today}
 
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
-\DeclareMathOperator{\sgn}{sgn}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\circ$}
+\renewcommand{\labelitemiii}{\footnotesize$\bullet$}
+\renewcommand{\labelitemiv}{\footnotesize$\circ$}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
 
 \setlength{\parindent}{0em}
 
@@ -32,51 +27,54 @@
   \includegraphics[width=\textwidth]{overview.png}
 \end{titlepage}
 
+{
 {\centering
-	This page is empty on purpose.\\
-  Source code at \emph{\href{https://github.com/nilshae/Summary-Pattern-Analysis-SS-2017}{https://github.com/nilshae/Summary-Pattern-Analysis-SS-2017}}\par
+  Source code at
+  \url{https://github.com/qi55wyqu/Summary-Pattern-Analysis-SS-2017} forked from
+  \url{https://github.com/nilshae/Summary-Pattern-Analysis-SS-2017}\par
+}
+\vspace{5mm}
+
+\begin{multicols}{2}
+\tableofcontents
+%\vfill\null
+%\columnbreak
+\listoffigures
+\listofalgorithms
+\end{multicols}
 }
 
 \newpage
 \import{./src/}{density_estimation.tex}
 
-\newpage
 \import{./src/}{parzen_rosenblatt_estimator.tex}
 
-\newpage
 \import{./src/}{clustering.tex}
 
-\newpage
 \import{./src/}{mean_shift_algorithm.tex}
 
-\newpage
 \import{./src/}{k_means.tex}
 
-\newpage
 \import{./src/}{dirichlet_process.tex}
 
-\newpage
 \import{./src/}{manifold_learning.tex}
 
-\newpage
 \import{./src/}{k_pca.tex}
 
-\newpage
 \import{./src/}{multi_dimensional_scaling.tex}
 
-\newpage
 \import{./src/}{locally_linear_embedding.tex}
 
-\newpage
 \import{./src/}{laplacian_eigenmaps.tex}
 
-\newpage
 \import{./src/}{random_forest.tex}
 
-\newpage
 \import{./src/}{hidden_markov_model.tex}
 
-\newpage
 \import{./src/}{markov_random_fields.tex}
+
+\nocite{*}
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
 
 \end{document}

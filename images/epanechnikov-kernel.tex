@@ -1,0 +1,15 @@
+\documentclass{standalone}
+\input{../preamble}
+\input{../commands}
+\begin{document}
+\begin{tikzpicture}
+	\draw[-latex] (-2.5,0) -- (2.5,0) node[above] {$x$};
+	\draw[-latex] (0,-0.5) -- (0,2) node[right] {$\idx{k}{E}$};
+	\def\vrbl{1}
+	\draw[domain=-1:1,variable=\x, thick] plot ({\x},{\vrbl*(1-\x*\x)});
+	\draw[thick] (-2,0) -- (-1,0) (1,0) -- (2,0);
+	\draw (-0.5, \vrbl) -- ++ (1,0) node[right] {$c$};
+	\foreach \x in {-1, 1}
+		\draw (\x, 0.1) -- ++(0, -0.2) node[below] {\x};
+\end{tikzpicture}
+\end{document}

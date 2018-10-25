@@ -1,0 +1,54 @@
+\tikzset{
+	every edge/.style={ 
+		draw, ->,>=stealth, auto, semithick
+	}
+}
+
+\let\stdvec\vec
+\renewcommand{\vec}[1]{\ensuremath{\bm{#1}}}
+\newcommand{\mat}[1]{\ensuremath{\bm{#1}}}
+\newcommand{\inv}[1]{\ensuremath{\mat{#1}^{-1}}}
+\newcommand{\pinv}[1]{\ensuremath{\mat{#1}^{+}}}
+\newcommand{\transp}{^T}
+\newcommand*\dif{\mathop{}\!\mathrm{d}}
+\newcommand{\euler}{\mathrm{e}}
+\newcommand{\covar}{\ensuremath{\mat{\Sigma}}}
+\newcommand{\pd}[2]{\dfrac{\partial #1}{\partial #2}}
+\newcommand{\pds}[2]{\dfrac{\partial^2 #1}{\partial #2^2}}
+\newcommand{\pdsv}[2]{\dfrac{\partial^2 #1}{\partial #2\partial #2\transp}}
+\newcommand{\ad}[2]{\dfrac{\mathrm{d}#1}{\mathrm{d}#2}}
+\newcommand{\ltwo}[1]{\ensuremath{\lVert #1 \rVert_2}}
+\newcommand{\lone}[1]{\ensuremath{\lVert #1 \rVert_1}}
+\newcommand{\norm}[1]{\ensuremath{\lVert #1 \rVert}}
+\newcommand{\mean}[1]{\ensuremath{\bar{#1}}}
+\newcommand{\idx}[2]{#1_{\mathrm{#2}}}
+\newcommand{\eqex}{\ensuremath{\overset{!}{=}}}
+\newcommand{\define}{\ensuremath{\coloneqq}}
+\DeclareRobustCommand{\rchi}{{\mathpalette\irchi\relax}}
+\newcommand{\irchi}[2]{\raisebox{\depth}{$#1\chi$}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\sign}{sgn}
+\DeclareMathOperator*{\trace}{\mathrm{tr}}
+\DeclareMathOperator*{\maximise}{\mathrm{maximise}}
+\DeclareMathOperator*{\minimise}{\mathrm{minimise}}
+\DeclareMathOperator*{\diag}{\mathrm{diag}}
+\DeclareMathOperator*{\dist}{\mathrm{dist}}
+\DeclareMathOperator*{\erf}{\mathrm{erf}}
+\DeclareMathOperator*{\grad}{\mathrm{grad}}
+\DeclareMathOperator*{\kurt}{\mathrm{kurt}}
+\DeclareMathOperator*{\mutinf}{\mathrm{MI}}
+\DeclareMathOperator{\sgn}{sgn}
+
+\newcommand*{\eg}{e.g.\@\xspace}
+\newcommand*{\Eg}{E.g.\@\xspace}
+\newcommand*{\ie}{i.e.\@\xspace}
+\newcommand*{\wrt}{w.r.t.\@\xspace}
+
+\makeatletter
+\newcommand*{\etc}{%
+    \@ifnextchar{.}%
+        {etc}%
+        {etc.\@\xspace}%
+}
+\makeatother

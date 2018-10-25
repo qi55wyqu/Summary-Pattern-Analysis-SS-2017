@@ -1,47 +1,48 @@
 
 % !TeX root = ../main.tex
 
-\subsection*{Locally Linear Embedding (LLE)}
+\newpage
+\subsection{Locally Linear Embedding (LLE)}
 
-\paragraph{Idea:} Describe each point \(\vec{x_i}\) as linear combination of its local neighborhood \footnote{ This makes the mapping an overall non-linear mapping consisting of small linear patches}.
+\paragraph{Idea:} Describe each point \(\vec{x}_i\) as linear combination of its local neighborhood.\footnote{This makes the mapping an overall non-linear mapping consisting of small linear patches}
 
-\[\vec{x_i} = \sum_{j \in N(\vec{x_i}), j \neq i} w_{ij} \vec{x_j} \qquad \text{ subject to } \sum_j w_{ij} = 1\]
+\[\vec{x}_i = \sum_{\mathclap{\substack{j \in N(\vec{x}_i)\\j \neq i}}} w_{ij} \vec{x}_j \qquad \text{ subject to } \sum_j w_{ij} = 1\]
 
-This way we maintain the weights inside the local neighborhood. In the lower dimension we can then linearly interpolate a point \(\vec{x_{i}'}\) from its neighbors weights. $\vec{x_i}' = \sum_{j \in N(\vec{x_i}')} w_{ij} \vec{x_j}'$
+This way we maintain the weights inside the local neighborhood. In the lower dimension we can then linearly interpolate a point \(\vec{x}_i'\) from its neighbors' weights. 
+%$\vec{x}_i' = \sum_{j \in N(\vec{x}_i')} w_{ij} \vec{x}_j'$
 
-\paragraph{Algorithm:}
+\begin{algorithm}[H]
+\caption{Locally Linear Embedding}
 \begin{enumerate}
     \item Define the neighborhood (\(k\)-nearest neighbors, distance thresholding)
 
     \item Solve for \(w_{ij}\) in the high dimensional space (Modified version)\footnote{The original formulation (s. t. $ w_{ij} = 1$) is sometimes unstable if applied on real data.}
-        \[min \sum_{i}||\vec{x_i} - \sum_{j\in N(\vec{x_i})} w_{ij} \vec{x_j}||_2^2 \qquad \text{ subject to } \sum_{j \in N(\vec{x_i})} w_{ij}^2 = 1\]
+        \[\min \sum_{i}\big|\big|\vec{x}_i - \sum_{\mathclap{j\in N(\vec{x}_i)}} w_{ij} \vec{x}_j\big|\big|_2^2 \qquad \text{ subject to } \sum_{\mathclap{j \in N(\vec{x}_i)}} w_{ij}^2 = 1\]
 
 
-        Note the objective function is \underline{invariant} to translation, therefore we can move each point $\vec{x_i}$ and its neighborhood to the origin
+        Note the objective function is \underline{invariant} to translation, therefore we can move each point $\vec{x}_i$ and its neighborhood to the origin
 
-        \begin{equation*}
-            = min \sum_{i} ||- \sum_j w_{ij} (\vec{x_j} - \vec{x_i})||_2^2
-        \end{equation*}
+        \begin{align*}
+            &= \min \sum_{i}\big|\big|- \sum_j w_{ij} (\vec{x}_j - \vec{x}_i)\big|\big|_2^2 \\
+          &= \min \sum_{i} ||\mat{M}_i\vec{w}_i||_2^2
+        \end{align*}
 
-        \begin{equation*}
-          = min \sum_{i} ||M_i\vec{w_i}||_2^2
-        \end{equation*}
+        where $\mat{M}_i = \left(\begin{array}{cccc} \vec{x}_1 - \vec{x}_i & \vec{x}_2 - \vec{x}_i& \dots& \vec{x}_N - \vec{x}_i \end{array}\right)$\footnote{differences \(\vec{x}_j - \vec{x}_i = 0\) for \(\vec{x}_j\) outside the neighborhood of \(\vec{x}_i\)}
 
-        where $M_i = \left(\begin{array}{cccc} \vec{x_1} - \vec{x_i} & \vec{x_2} - \vec{x_i}& \dots& \vec{x_N} - \vec{x_i} \end{array}\right)$\footnote{differences \(\vec{x_j} - \vec{x_i} = 0\) for \(\vec{x_j}\) outside the neighborhood of \(\vec{x_i}\)}
-
-        \[\Rightarrow min \sum_{i} (M_i \vec{w_i})^T (M_i \vec{w_i}) + \lambda(1-w_i^T \vec{w_i})\]
+        \[\Rightarrow \min \sum_{i} (\mat{M}_i \vec{w}_i)^T (\mat{M}_i \vec{w}_i) + \lambda\left(1-\vec{w}_i^T \vec{w}_i\right)\]
 
         where the latter is the constraint that the squared weights should sum up to one. If we would compute the derivative of \(\lambda(1-w_i)\), the constraint would vanish to \(0\).
 
         Compute
-        \[\frac{\partial}{\partial \vec{w_i}} (\vec{w_i}^T M_i^T M_i \vec{w_i} + \lambda(1-w_i^T \vec{w_i})=  2 \cdot M_i^T M_i \vec{w_i} - 2 \lambda  \cdot \vec{w_i} = 0\]
-        \[\Rightarrow \boxed{M_i^T M_i \vec{w_i} = \lambda \vec{w_i}}\]
+        \[\frac{\partial}{\partial \vec{w}_i} \left(\vec{w}_i^T \mat{M}_i^T \mat{M}_i \vec{w}_i + \lambda\left(1-w_i^T \vec{w}_i\right)\right)=  2 \cdot \mat{M}_i^T \mat{M}_i \vec{w}_i - 2 \lambda  \cdot \vec{w}_i = 0\]
+        \[\Rightarrow \boxed{\mat{M}_i^T \mat{M}_i \vec{w}_i = \lambda \vec{w}_i}\]
 
         This is an eigenvector eigenvalue problem.
 
-    \item Reconstruct the lower dimensional embedding by solving for \(\vec{x_i}' \in \mathbb{R}^{d'} (d' \ll d)\):
-        \[min \sum_i ||\vec{x_i}' - \sum_{j \in N(\vec{x_i})} w_{ij} \vec{x_j}'||_2^2 \qquad \text{ subject to } \frac{1}{N} \sum_i \vec{x_i}' \vec{x_i}'^T = I, \sum_i \vec{x_i}' = \vec{0}\]
-        The first constraint says that the covariance is the identity. Which basically fixes the volume. The second one centers the samples. This again boils down to an eigenvector eigenvalue problem, where $A = (I - W)^T (I - W)$
+    \item Reconstruct the lower dimensional embedding by solving for \(\vec{x}_i' \in \mathbb{R}^{d'} (d' \ll d)\):
+        \[\min \sum_i\big|\big|\vec{x}_i' - \sum_{\mathclap{j \in N(\vec{x}_i)}} w_{ij} \vec{x}_j'\big|\big|_2^2 \qquad \text{ subject to } \frac{1}{N} \sum_i \vec{x}_i' \vec{x}_i'^T = I,\quad \sum_i \vec{x}_i' = \vec{0}\]
+        The first constraint says that the covariance is the identity. Which basically fixes the volume. The second one centers the samples. This again boils down to an eigenvector eigenvalue problem, where $\mat{A} = (\mat{I} - \mat{W})^T (\mat{I} - \mat{W})$
 
-          \[\Rightarrow \boxed{A \vec{x_i}' = \lambda \vec{x_i}'}\]
+          \[\Rightarrow \boxed{\mat{A} \vec{x}_i' = \lambda \vec{x}_i'}\]
 \end{enumerate}
+\end{algorithm}

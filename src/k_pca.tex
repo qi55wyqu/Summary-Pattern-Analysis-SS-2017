@@ -1,49 +1,57 @@
 % !TeX root = ../main.tex
 
-\subsection*{(Kernel) PCA}
+\subsection{(Kernel) PCA}
 
-Our known approch is the principle component analysis (PCA).
+Our known approach is the principal component analysis (PCA).
 
 \begin{figure}[H]
 	\centering
-	\begin{minipage}[b]{0.6\textwidth}
+	\begin{minipage}[c]{0.65\textwidth}
 		\begin{itemize}
-			\item eigen-decomposition of covariance matrix $\Sigma$
+			\item eigen-decomposition of covariance matrix $\covar$
 			\item reduce dimensions by dropping eigenvectors with smaller eigenvalues
-			\item transform data to lower dimensional space by multiplying the matrix of eigenvectors with the data matrix \[X_{low} = X_{high} \cdot W_{low}\] where $W_{low}$ is a matrix of the wanted number of eigenvectors in its columns
+			\item transform data to lower dimensional space by multiplying the matrix of eigenvectors with the data matrix \[\idx{\mat{X}}{low} = \idx{\mat{X}}{high} \cdot \idx{\mat{W}}{low}\] where $\idx{\mat{W}}{low}$ is a matrix of the wanted number of eigenvectors in its columns
 		\end{itemize}
 	\end{minipage}
-	\begin{minipage}[b]{0.3\textwidth}
-		\includegraphics[width=\textwidth]{pca_wiki}
+	\hfill
+	\begin{minipage}[c]{0.28\textwidth}
+		\includegraphics[width=\textwidth, interpolate, trim=45 45 45 45, clip]{pca_wiki}
+		\caption{PCA}
 	\end{minipage}
 \end{figure}
 
-Orthogonal basis that is aligned with the ``maximum spread'' (w.r.t. the covariance) of the data. It is a global unsupervised method\footnote{Operating on all data points, no labels, find one global optimal solution}. PCA is a linear method, which is problematic when we want a non-linear mapping of our data.
+Orthogonal basis that is aligned with the ``maximum spread'' (\wrt the covariance) of the data. It is a global unsupervised method.\footnote{Operating on all data points, no labels, find one global optimal solution} PCA is a linear method, which is problematic when we want a non-linear mapping of our data.
 
 \begin{equation*}
-    \sum_{i}^{N} (\vec{n}^T \vec{x_i}) (\vec{n}^T \vec{x_i}) + \lambda (\vec{n}^T \vec{n} - 1)
+    \sum_{i}^{N}\left(\vec{n}^T \vec{x}_i\right)\left(\vec{n}^T \vec{x}_i\right) + \lambda \left(\vec{n}^T \vec{n} - 1\right)
 \end{equation*}
 
 \begin{figure}[H]
 	\centering
-	\begin{minipage}[b]{0.45\textwidth}
-		\includegraphics[width=\textwidth]{kpca1}
-	\end{minipage}
-	\begin{minipage}[b]{0.45\textwidth}
-		\includegraphics[width=\textwidth]{kpca2}
-	\end{minipage}
+	\begin{subfigure}[t]{0.475\textwidth}
+	  \centering
+		\includegraphics[width=0.5\textwidth, trim=0 0 530 0, clip, interpolate]{kpca1}
+		\caption{These classes are linearly inseparable in the input space.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.475\textwidth}
+	  \centering
+		\includegraphics[width=0.5\textwidth, trim=0 0 575 0, clip, interpolate]{kpca2}
+		\caption{We can make the problem linearly separable by a simple mapping:\\$\mat{\Phi}:\mathbb{R}^2\to\mathbb{R}^3$\\$(\vec{x}_1, \vec{x}_2)\mapsto\left(\vec{x}_1, \vec{x}_2, \vec{x}_1^2+\vec{x}_2^2\right)$}
+	\end{subfigure}
+	\caption{Kernel PCA}
 \end{figure}
 
-The Kernel PCA performs a non-linear mapping of the data, then perform a standard (linear) PCA on the result. With the kernel-trick we can do that in one step. The Objective function: (the non-linear mapping is part of $\phi$)
+The Kernel PCA performs a non-linear mapping of the data, then perform a standard (linear) PCA on the result. With the kernel-trick we can do that in one step. The Objective function: (the non-linear mapping is part of $\mat{\Phi}$)
 
 % TODO: better explanaition
 
 \begin{equation*}
-    \delta = \sum_{i,j=1}^{N} (\phi(\vec{x_i}) - \phi(\vec{x_j}))^T (\phi(\vec{x_i}) - \phi(\vec{x_j})) + \lambda (\phi^T\phi-1)
+    \delta = \sum_{i,j=1}^{N} (\mat{\Phi}\vec{x}_i - \mat{\Phi}\vec{x}_j)^T (\mat{\Phi}\vec{x}_i - \mat{\Phi}\vec{x}_j) + \lambda\left(\mat{\Phi}^T\mat{\Phi}-1\right)
 \end{equation*}
 
 Some offsprings of the Kernel PCA idea are:
 \begin{enumerate}
     \item Perform some preprocessing / mapping that operates non-linearly
-    \item The dimensionality reduction itself is an operation that operates linearly.
+    \item The dimensionality reduction itself is an operation that operates linearly
 \end{enumerate}

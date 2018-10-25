@@ -1,0 +1,11 @@
+\documentclass{standalone}
+\input{../preamble}
+\input{../commands}
+\begin{document}
+\begin{tikzpicture}
+	\node[rectangle, minimum width=2cm] (max) at (0,0) {$\hat{\mu}_k, \hat{\covar}_k, \hat{p_k}$};
+	\node[below=of max, rectangle, minimum width=2cm] (exp) {$p(k|\vec{x})$};
+	\draw (exp.west) edge[out=180, in=180, looseness=2] node[left] {Maximization} (max.west);
+	\draw (max.east) edge[out=0, in=0, looseness=2] node[right] {Expectation} (exp.east);
+\end{tikzpicture}
+\end{document}

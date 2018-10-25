@@ -1,0 +1,61 @@
+\documentclass{standalone}
+\input{../preamble}
+\input{../commands}
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+	width=8cm,
+	height=5cm, 	
+	xmin=0,
+	xmax=10.5,
+	ymin=0, 
+	ymax=1.15,
+	ticks=none,
+	axis x line=bottom,
+	axis y line=left,
+	xlabel=$K$,
+	ylabel=$W(C)$,
+	every axis x label/.style={
+    		at={(ticklabel* cs:1.025)},
+    		anchor=west,
+	},
+	every axis y label/.style={
+    		at={(ticklabel* cs:1.0)},
+    		anchor=east,
+	},
+	legend cell align={left},
+]
+\addplot[
+	domain=0:10, 
+	thick, 
+	dashed
+]{1*exp(-0.15*x)};
+\addlegendentry{Uniform distribution}
+\addplot[
+	thick, 
+	no markers,
+	smooth
+] coordinates {
+	(0, 0.9)
+	(0.5, 0.8)
+	(1, 0.72)
+	(1.5, 0.65)
+	(2, 0.45)
+	(4, 0.4)
+	(5, 0.32)
+	(6, 0.28)
+	(7, 0.24)
+	(8, 0.17)
+	(9, 0.13)
+	(10, 0.07)
+};
+\addlegendentry{Actual data}
+\addplot[
+] coordinates {
+	(1.95,0)
+	(1.95,1.2)
+};
+%\draw [thick, decoration={brace,mirror,raise=5pt},decorate] (axis cs:1.725,0.45) -- (axis cs:1.725,0.74);
+\end{axis}
+\end{tikzpicture}
+\end{document}

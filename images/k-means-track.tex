@@ -1,0 +1,40 @@
+\documentclass{standalone}
+\input{../preamble}
+\input{../commands}
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+	width=8cm,
+	height=5cm, 	
+	xmin=0,
+	xmax=10.5,
+	ymin=0, 
+	ymax=1.15,
+	ticks=none,
+	axis x line=bottom,
+	axis y line=left,
+	xlabel=$K$,
+	ylabel=$W(C)$,
+	every axis x label/.style={
+    		at={(ticklabel* cs:1.025)},
+    		anchor=west,
+	},
+	every axis y label/.style={
+    		at={(ticklabel* cs:1.0)},
+    		anchor=east,
+	},
+	legend cell align={left},
+]
+\addplot[
+	domain=0:10, 
+	thick,
+	smooth
+]{0.25+0.75/(1+exp(1.5*(x-5)))+0.02*rand};
+\addplot[
+] coordinates {
+	(5,0)
+	(5,1.2)
+};
+\end{axis}
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,33 @@
+\documentclass{standalone}
+\input{../preamble}
+\input{../commands}
+\begin{document}
+\tdplotsetmaincoords{50}{15}
+\begin{tikzpicture}[tdplot_main_coords, scale=1]
+	\def\szx{5}
+	\def\szy{3}
+	\def\rad{0.125cm}
+
+	\foreach \x in {0, 1, ..., \szx}
+		\draw[thick] (\x, 0, 0) -- ++(0, \szy, 0);
+	\foreach \y in {0, 1, ..., \szy}
+		\draw[thick] (0, \y, 0) -- ++(\szx, 0, 0);
+	\foreach \y in {0, 1} {
+		\foreach \x in {0, 1, ..., 4} {
+			\draw[dashed, thick] (\x+0.5,\y+1.5,1.5) -- ++(0,0,-1.5);
+			\shade[ball color=black] (\x+0.5,\y+1.5,1.5) circle (\rad);			
+		}
+	}
+	\foreach \x in {0, 1} {		
+		\draw[dashed, thick] (\x+0.5,0.5,1.5) -- ++(0,0,-1.5);
+		\shade[ball color=black] (\x+0.5,0.5,1.5) circle (\rad);
+	}
+	\foreach \y in {1.5, 2.5} {
+		\draw (4.7,\y,1.5) edge[<->, out=-30, in=30, looseness=1] (5.1,\y,0);
+		\draw (0.35,\y,1.5) edge[<->, out=210, in=120, looseness=1] ++ (0,-0.9,0);
+	}
+	\foreach \x in {0.5, ..., 3.5} {
+		\draw (\x,2.7,1.5) edge[<->, out=30, in=120, looseness=1] ++ (0.9,-0,0);
+	}
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,23 @@
+\documentclass{standalone}
+\input{../preamble}
+\input{../commands}
+\begin{document}
+\begin{tikzpicture}[thick]
+	\foreach \i in {1, 2, 3} {
+		\draw (\i, 0.25) -- ++(0,3.5);
+		\draw (0.25, \i) -- ++(3.5,0);
+	}
+	\foreach \pos in {(0.8,1.8), (2.8,1.8), (1.8,0.8), (1.8,2.8)}
+		\draw[fill=white] \pos rectangle ++ (0.4,0.4);
+	\fill (2,2) circle (0.25	);
+	\begin{scope}[xshift=4cm]
+		\foreach \i in {1, 2, 3} {
+			\draw (\i, 0.25) -- ++(0,3.5);
+			\draw (0.25, \i) -- ++(3.5,0);
+	}
+	\foreach \pos in {(0.8,1.8), (2.8,1.8), (1.8,0.8), (1.8,2.8), (0.8,0.8), (0.8,2.8), (2.8,0.8), (2.8,2.8)}
+		\draw[fill=white] \pos rectangle ++ (0.4,0.4);
+	\fill (2,2) circle (0.25);
+	\end{scope}
+\end{tikzpicture}
+\end{document}

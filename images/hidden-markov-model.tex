@@ -1,0 +1,23 @@
+\documentclass{standalone}
+\input{../preamble}
+\input{../commands}
+\begin{document}
+\begin{tikzpicture}[state/.style={draw, thick, circle split, fill=black!5}]
+	\def\scl{1.5}
+	\node[state] (S3) at (0,0) {$S_3$\nodepart{lower}$\vec{b}_3(o_i)$};
+	\node[state] (S1) at (-\scl*1.414,\scl*2) {$S_1$\nodepart{lower}$\vec{b}_1(o_i)$};
+	\node[state] (S2) at (\scl*1.414,\scl*2) {$S_2$\nodepart{lower}$\vec{b}_2(o_i)$};
+	\draw (S1) edge[bend left] node[] {$a_{12}$} (S2);
+	\draw (S2) edge[] node[] {$a_{21}$} (S1);
+	\draw (S1) edge[] node[] {$a_{13}$} (S3);
+	\draw (S3) edge[bend left] node[] {$a_{31}$} (S1);
+	\draw (S2) edge[bend left] node[] {$a_{23}$} (S3);
+	\draw (S3) edge[] node[] {$a_{32}$} (S2);
+	\draw (S1) edge [out=150,in=120,looseness=5] node[above] {$a_{11}$} (S1);
+	\draw (S2) edge [out=30,in=60,looseness=5] node[above] {$a_{22}$} (S2);
+	\draw (S3) edge [out=-30,in=-60,looseness=5] node[right] {$a_{33}$} (S3);
+	\draw ($(S1)+(-1.25,-1.25)$) node[] {$\pi_1$} edge (S1);
+	\draw ($(S2)+(1.25,-1.25)$) node[] {$\pi_2$} edge (S2);
+	\draw ($(S3)+(-1.25,-1.25)$) node[] {$\pi_3$} edge (S3);
+\end{tikzpicture}
+\end{document}

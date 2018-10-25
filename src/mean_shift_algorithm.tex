@@ -1,70 +1,93 @@
 % !TeX root = ../main.tex
 
-\section*{\href{http://ieeexplore.ieee.org/document/1000236/?arnumber=1000236&tag=1}{Mean Shift Algorithm}}
+\section{Mean Shift Algorithm~\cite{meanshift}}
 
 \paragraph{Idea:}
-Find maxima in pdf without actually performing a full density estimation \footnote{This applies only in some cases, e.g. quickly finding clusters through particle tracing or with a down-sampled PDF}. Maxima can be found, where the gradient of the pdf is zero. \\
+Find maxima in pdf without actually performing a full density estimation. \footnote{This applies only in some cases, e.g. quickly finding clusters through particle tracing or with a down-sampled PDF} Maxima can be found, where the gradient of the pdf is zero. \\
 
 Assume that we have a full density estimation
 \begin{equation*}
 p(\vec{x}) = \dfrac{1}{N} \sum_{i=1}^N k_h(\vec{x}; \vec{x_i})
 \end{equation*}
-denotes the multivariate kernel density estimation, where we assume $k_h$ to be a radially symmetric kernel, i.e. $k(\vec{x}; \vec{x_i}) = k_h(||\vec{x_i} - \vec{x}||^2)$. A local maximum of the pdf can be assumed where the gradient vanishes 
+denotes the multivariate kernel density estimation, where we assume $k_h$ to be a radially symmetric kernel, \ie $k(\vec{x}; \vec{x}_i) = k_h(||\vec{x}_i - \vec{x}||^2)$. 
+A local maximum of the pdf can be assumed where the gradient vanishes 
 
 
 \begin{align*}
-	\nabla p(\vec{x}) &= \dfrac{1}{N} \sum_{i=1}^N \nabla k(\vec{x}; \vec{x_i}) \doteq \vec{0} \\
-	\nabla p(\vec{x}) &= \dfrac{1}{N} \sum_{i=1}^N k_h'(||\vec{x_i} - \vec{x}||^2) \cdot (-2 (\vec{x_i} - \vec{x})) \doteq \vec{0}
+	\nabla p(\vec{x}) &= \dfrac{1}{N} \sum_{i=1}^N \nabla k(\vec{x}; \vec{x}_i) \doteq \vec{0} \\
+	&= \dfrac{1}{N} \sum_{i=1}^N k_h'\left(||\vec{x}_i - \vec{x}||^2\right) \cdot (-2 (\vec{x}_i - \vec{x})) \doteq \vec{0}
 \end{align*}
 
 All constants can be dropped, then we multiply the kernel with it's derivative
 
 \begin{equation*}
-  \sum_{i=1}^N k_h'(||\vec{x_i} - \vec{x}||^2) \vec{x_i} - \sum_{i=1}^N k_h'(||\vec{x_i} - \vec{x}||^2) \vec{x} \doteq \vec{0}
+  \sum_{i=1}^N k_h'\left(||\vec{x}_i - \vec{x}||^2\right) \vec{x}_i - \sum_{i=1}^N k_h'\left(||\vec{x}_i - \vec{x}||^2\right) \vec{x} \doteq \vec{0}
 \end{equation*}
 
 Then we get the mean shift vector
 
 \begin{equation*}
   \boxed{\label{mean-shift-vector}
-  \Rightarrow m(\vec{x}) = \dfrac{\sum_{i=1}^N k_h'(||\vec{x_i} - \vec{x}||^2) \vec{x_i}}{\sum_{i=1}^N k_h'(||\vec{x_i} - \vec{x}||^2)} - \vec{x} \doteq \vec{0}}
+  \Rightarrow m(\vec{x}) = \dfrac{\sum_{i=1}^N k_h'\left(||\vec{x}_i - \vec{x}||^2\right) \vec{x}_i}{\sum_{i=1}^N k_h'\left(||\vec{x}_i - \vec{x}||^2\right)} - \vec{x} \doteq \vec{0}}
 \end{equation*}
 
 To perform a gradient ascent, compute the gradient, walk one step, re-compute the gradient, walk a step, \ldots
 
-\paragraph{Mean Shift Algorithm}
+\begin{algorithm}[H]
+\caption{Mean Shift Algorithm}
 \begin{enumerate}
-  \item Compute the mean shift vector $m(\vec{x}^{(t)})$
-  \item Update $\vec{x}:\vec{x}^{(t+1)} = \vec{x}^{(t)} + m(\vec{x}^{(t)}) = \vec{x}^{(t)} + \dfrac{\sum_{i=1}^N k_h'(||\vec{x_i} - \vec{x}||^2) \vec{x_i}}{\sum_{i=1}^N k_h'(||\vec{x_i} - \vec{x}||^2)} - \vec{x}^{(t)}= \dfrac{\sum_{i=1}^N k_h'(||\vec{x_i} - \vec{x}||^2) \vec{x_i}}{\sum_{i=1}^N k_h'(||\vec{x_i} - \vec{x}||^2)}$
+  \item Compute the mean shift vector $m\left(\vec{x}^{(t)}\right)$
+  \begin{equation*}
+    m(\vec{x}) = \dfrac{\sum_{i=1}^N k_h'\left(||\vec{x}_i - \vec{x}||^2\right) \vec{x}_i}{\sum_{i=1}^N k_h'\left(||\vec{x}_i - \vec{x}||^2\right)} - \vec{x} \doteq \vec{0}
+  \end{equation*}
+  \item Update $\vec{x}$
+  \begin{align*}
+    \vec{x}^{(t+1)}&=\vec{x}^{(t)} + m\left(\vec{x}^{(t)}\right) \\
+    &=\vec{x}^{(t)} + \dfrac{\sum_{i=1}^N k_h'\left(||\vec{x}_i - \vec{x}||^2\right) \vec{x}_i}{\sum_{i=1}^N k_h'\left(||\vec{x}_i - \vec{x}||^2\right)} - \vec{x}^{(t)} \\
+    &= \dfrac{\sum_{i=1}^N k_h'\left(||\vec{x}_i - \vec{x}||^2\right) \vec{x}_i}{\sum_{i=1}^N k_h'\left(||\vec{x}_i - \vec{x}||^2\right)}
+  \end{align*}
 \end{enumerate}
+\end{algorithm}
 
 \begin{figure}[H] 
 	\centering
-	\begin{minipage}[b]{0.4\textwidth}
+	\begin{subfigure}[b]{0.4\textwidth}
 		\includegraphics[width=\textwidth]{04-kernel-size}
-		\caption{The kernel size h indirectly controls the number of identified maxima}
-	\end{minipage}
-	\begin{minipage}[b]{0.4\textwidth}
+		\caption{The kernel size $h$ indirectly controls the number of identified maxima}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.4\textwidth}
 		\includegraphics[width=\textwidth]{05-kernel-size-pitfall}
 		\caption{One of the issues is, the case when a zero gradient is just between two finer maxima}	
 		\label{mean-shift-issue}	
-	\end{minipage}
+	\end{subfigure}
+	\caption{Mean shift kernel size}
 \end{figure}
 
 \subparagraph{Epanechnikov kernel}
 If we use the Epanechnikov kernel as $k_h$, then the computation breaks down to the mean of the samples in a circular (hyper-spherical) around $\vec{x}^{(t)}$
 
 \begin{equation*}
-  k_E(\vec{x}) = \begin{cases}
-    c \cdot (1 - \vec{x}^T \vec{x})&\text{when } \vec{x}^T \vec{x} \le 1\\
-    0 &\text{otherwise}
+  \idx{k}{E}(\vec{x}) = \begin{cases}
+    c \cdot \left(1 - \vec{x}^T \vec{x}\right)&\text{if } \vec{x}^T \vec{x} \le 1\\
+    \hfil 0 &\text{otherwise}
   \end{cases}
 \end{equation*}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.4\textwidth]{06-moving-epan-kernel}
-  \caption{Mean Shift iterations with an Epanechnikov kernel}
+  \begin{subfigure}[c]{0.4\textwidth}
+    \centering
+    \includestandalone{epanechnikov-kernel}
+    \caption{Epanechnikov kernel}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[c]{0.4\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{06-moving-epan-kernel}
+    \caption{Mean Shift iterations with an Epanechnikov kernel}
+  \end{subfigure}
+  \caption{Mean shift}
 \end{figure}
 
 \subparagraph{Application:}
@@ -74,13 +97,13 @@ If we use the Epanechnikov kernel as $k_h$, then the computation breaks down to 
     \begin{itemize}
       \item Similar in result to a super pixel segmentation: operates locally in the image
       \item Incorporate the position of each pixel
-      \item Properly scale each feature dimension, such that distances are comparable (e.g. $\vec{x} = $(x,y,r,g,b))
+      \item Properly scale each feature dimension, such that distances are comparable (\eg $\vec{x} = (x,y,r,g,b)$)
     \end{itemize}
 \end{itemize}
 
 \subparagraph{Remarks on the found maxima:}
 \begin{itemize}
-  \item Different trajectories typically coverage only to \textbf{almost} the same peak, thus, we will have to post process the peaks and somehow reduce them.
-  \item We don't have a guarantee to sit on top of a maximum when reaching a 0-gradient. This is due to the finite window size and the discrete representation of our density (see figure \ref{mean-shift-issue}).
+  \item Different trajectories typically converge only to \textbf{almost} the same peak, thus, we will have to post process the peaks and somehow reduce them.
+  \item We don't have a guarantee to sit on top of a maximum when reaching a 0-gradient. This is due to the finite window size and the discrete representation of our density (see~\cref{mean-shift-issue}).
   \item \label{mean-shift-cost-effectiveness} If the amount of data is large, then it may become extremely costly to iteratively evaluate the ``neighborhood finder''. In that case we have to help ourself, either with a smart data structure (oct-tree or a generalization for many dimensions) or locality sensitive hashing (LSH).
 \end{itemize}

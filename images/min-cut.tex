@@ -1,0 +1,38 @@
+\documentclass{standalone}
+\input{../preamble}
+\input{../commands}
+\begin{document}
+\tdplotsetmaincoords{70}{9}
+\begin{tikzpicture}[tdplot_main_coords, scale=1.25] 
+	\def\sz{3}
+	\def\rad{0.05cm}
+	\coordinate (s) at (0.5*\sz,0.5*\sz,0.75*\sz);
+	\coordinate (t) at (0.5*\sz,0.5*\sz,-0.75*\sz);
+	\foreach \y in {0, 1, ..., \sz} {
+		\foreach \x in {0, 1, ..., \sz}
+			\draw[thin, black!60] (t) -- (\x, \y, 0);
+	}
+	\fill[white, opacity=0.5] (0,0,0) -- ++(\sz,0,0) -- ++(0,\sz,0) -- ++(-\sz,0,0) -- cycle;
+	\foreach \x in {0, 1, ..., \sz}
+		\draw (\x, 0, 0) -- ++(0, \sz, 0);
+	\foreach \y in {0, 1, ..., \sz}
+		\draw (0, \y, 0) -- ++(\sz, 0, 0);
+		\draw[very thick, white, rounded corners=5pt] (0.5,-1.5,0) -- ++(0,2,0) -- ++(1,0,0) -- ++(0,1,0) -- ++(-1,0,0) -- ++(0,1,0) -- ++(3,0,0);
+	\draw[thick, blue!70!black, rounded corners=5pt] (0.5,-1.5,0) -- ++(0,2,0) -- ++(1,0,0) -- ++(0,1,0) -- ++(-1,0,0) -- ++(0,1,0) -- ++(3,0,0) node[anchor=west, black] {cut};
+	\foreach \y in {0, 1, ..., \sz} {
+		\foreach \x in {0, 1, ..., \sz} {
+			\draw[thin, black!60] (\x, \y, 0) -- (s);
+		}
+	}
+	\draw (0,0,0) edge node[pos=1, align=center, anchor=east] {label 1:\\linked to the drain} ++(-0.5,-0.5,0.25);
+	\draw (\sz,\sz,0) edge node[pos=1, align=center, anchor=south west] {label 0:\\linked to the source} ++(0.5,0.5,0.25);
+	\foreach \y in {0, 1, ..., \sz} {
+		\foreach \x in {0, 1, ..., \sz} {
+			\shade[ball color=black] (\x,\y,0) circle (\rad);
+		}
+	}
+	\draw[thin, black!60] (3, 0, 0) -- (s); % 
+	\shade[ball color=black] (s) circle (\rad) node[above] {$s$};	
+	\shade[ball color=black] (t) circle (\rad) node[below] {$t$};
+\end{tikzpicture}
+\end{document}

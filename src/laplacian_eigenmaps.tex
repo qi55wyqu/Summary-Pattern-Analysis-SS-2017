@@ -1,48 +1,48 @@
 % !TeX root = ../main.tex
 
-\subsection*{Laplacian Eigenmaps}
+\subsection{Laplacian Eigenmaps}
 
 \paragraph{Idea:} Apply a SVD on the graph Laplacian of a fully connected graph of observations.
 
 \begin{enumerate}
-    \item Build an adjacency graph on the set of feature points \(S=\{\vec{x_1}, \dots, \vec{x_n}\}\). We use the \textbf{Graph Laplacian} \footnote{Matrix representation of a graph} $L$.
+    \item Build an adjacency graph on the set of feature points \(S=\{\vec{x}_1, \dots, \vec{x}_n\}\). We use the \textbf{Graph Laplacian}\footnote{Matrix representation of a graph} $\mat{L}$.
 
-      \[L = (D - W)\]
+      \[\mat{L} = (\mat{D} - \mat{W})\]
 
-      where \(D\) is a diagonal matrix which is there for normalization\footnote{row sums up to zero \(0\) (\(\sum_{k=1}^N l_{ik} = 0\))} and \(W\) is the adjacency matrix.
+      where \(\mat{D}\) is a diagonal matrix which is there for normalization\footnote{row sums up to zero \(0\) \(\left(\sum_{k=1}^N l_{ik} = 0\right)\)} and \(\mat{W}\) is the adjacency matrix.
 
-      \[d_{ij} = \begin{cases} \sum_{k=1}^N w_{ik} & if \ i=j \\ 0 & if \ i \neq j \end{cases}
-        \qquad \qquad w_{ij} = \begin{cases} \text{weight between nodes i and j} & if \ i\neq j \\ 0 & if \ i = j\end{cases}\]
+      \[d_{ij} = \begin{cases} \sum_{k=1}^N w_{ik} & \text{if } i=j \\ \hfil 0 & \text{if } i \neq j \end{cases}
+        \qquad \qquad w_{ij} = \begin{cases} \text{weight between nodes } i \ \text{and } j & \text{if } i\neq j \\ \hfil 0 & \text{if } i = j\end{cases}\]
 
     \item Compute affinities as weights \(w_{ij}\) for the edges of the graph, such that closer point pairs have higher weights. One common choice for the weights is the so-called heat kernel or just binary affinity.
 
-      \[w_{ij} = \begin{cases} e^{-||\vec{x_i} - \vec{x_j}||_2^2}  & if \ i\neq j \\ 0 & if \ i = j\end{cases}
-        \qquad \qquad w_{ij} = \begin{cases} 1 & if \ ||x-\vec{x_j}||_2^2 \leq t \\ 0 & otherwise \end{cases}\]
+      \[w_{ij} = \begin{cases} \euler^{-||\vec{x}_i - \vec{x}_j||_2^2}  & \text{if } i\neq j \\ \hfil 0 & \text{if } i = j\end{cases}
+        \qquad \qquad w_{ij} = \begin{cases} 1 & \text{if } ||\vec{x}-\vec{x}_j||_2^2 \leq t \\ 0 & \text{otherwise} \end{cases}\]
 
     \item Perform eigendecomposition of the graph Laplacian
 
-      \[\Rightarrow \boxed{D^{-1} L \vec{x_i'} = \lambda \vec{x_i'}}\]
+      \[\Rightarrow \boxed{\mat{D}^{-1}\mat{L}\vec{x}_i' = \lambda \vec{x}_i'}\]
 
     \item Obtain low-dimensional embedding by selecting a ordered subset of eigenvectors from the decomposition.
     \begin{itemize}
         \item Discard the eigenvalue/eigenvector pair for the lowest eigenvalues\footnote{The number of eigenvalues depends on the connected components in the graph} (the 0 eigenvalue)
-        \item The \(d'\) next smallest eigenvalue/eigenvector pairs form the lower dimensional embedding: \(i\)th row of \(E = (\vec{e_1}, \vec{e_2}, \dots, \vec{e_{d'}})\) equals  \(\vec{x_i}'^T\) which represents the lower dimensional embedding of \(\vec{x_i}^T\).
+        \item The \(d'\) next smallest eigenvalue/eigenvector pairs form the lower dimensional embedding: \(i\)th row of \(\mat{E} = (\vec{e}_1, \vec{e}_2, \dots, \vec{e}_{d'})\) equals  \(\vec{x}_i'^T\) which represents the lower dimensional embedding of \(\vec{x}_i^T\).
     \end{itemize}
 \end{enumerate}
 
-\paragraph{Relationship of the objective function to the graph Laplacian L:}
-\[min \sum_{i=1}^{N}\sum_{j=1}^{N}||\vec{x_i}'- \vec{x_j}'||_2^2 w_{ij} \qquad \text{ subject to\footnote{squared distances should add up to 1} } x'^T D x' = 1 \]
+\paragraph{Relationship of the objective function to the graph Laplacian $\mat{L}$:}
+\[\min \sum_{i=1}^{N}\sum_{j=1}^{N}||\vec{x}_i'- \vec{x}_j'||_2^2\cdot w_{ij} \qquad \text{ subject to\footnote{squared distances should add up to 1} } \vec{x}'^T\mat{D}\vec{x}' = 1 \]
 
-where $ x'\in \mathbb{R}^{d'}, d' \ll d$.
+where $\vec{x}'\in \mathbb{R}^{d'}, d' \ll d$.
 
 \begin{equation*}
-    = \sum_{i,j} (\vec{x_i}'^T \vec{x_i}' - 2 \vec{x_i}'^T \vec{x_j}' + \vec{x_j}'^T \vec{x_j}') w_{ij} = 2 \cdot x'^T (D-W) x'
+    = \sum_{i,j} \left(\vec{x}_i'^T \vec{x}_i' - 2 \vec{x}_i'^T \vec{x}_j' + \vec{x}_j'^T \vec{x}_j'\right) w_{ij} = 2 \cdot \vec{x}'^T (\mat{D}-\mat{W}) \vec{x}'
 \end{equation*}
 
-\[min \ x'^T L x' \qquad \text{ subject to } x'^T D x' = 1\]
+\[\min \ \vec{x}'^T\mat{L}\vec{x}' \qquad \text{ subject to } \vec{x}'^T\mat{D}\vec{x}' = 1\]
 \begin{align*}
-    \frac{\partial}{\partial x'} (x'^T L x + \lambda (1-x'^T D x')) &= \vec{0}\\
-     2 L x' - \lambda D x' &= \vec{0}\\
-    Lx' &= \lambda D x'\\
-    \Rightarrow \boxed{D^{-1} L \vec{x'} = \lambda \vec{x'}}
+    \frac{\partial}{\partial\vec{x}'} \left(\vec{x}'^T\mat{L}\vec{x} + \lambda \left(1-\vec{x}'^T\mat{D}\vec{x}'\right)\right) &= \vec{0}\\
+     2\mat{L}\vec{x}' - \lambda\mat{D}\vec{x}' &= \vec{0}\\
+    \mat{L}\vec{x}' &= \lambda\mat{D}\vec{x}'\\
+    \Rightarrow \boxed{\inv{D}\mat{L}\vec{x}' = \lambda \vec{x}'}
 \end{align*}
